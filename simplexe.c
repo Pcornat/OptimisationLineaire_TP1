@@ -7,10 +7,8 @@
 #include "simplexe.h"
 #include "pivot.h"
 
-int main(int argc, char *argv[])
-{
-	if (argc != 2)
-	{
+int main(int argc, char* argv[]) {
+	if (argc != 2) {
 		fprintf(stderr, "Erreur, nombre d'agument insuffisnat.\n");
 		exit(EXIT_FAILURE);
 	}
@@ -19,19 +17,16 @@ int main(int argc, char *argv[])
 
 	strcpy(nomFichier, argv[1]);
 
-	if (!lireProbleme(nomFichier, &probleme))
-	{
+	if (!lireProbleme(nomFichier, &probleme)) {
 		afficherProbleme(probleme);
 		initMatPivot(&probleme);
 		afficherMatrice(&probleme);
-	}
-	else
-	{
+	} else {
 		printf("Probleme lecture Probleme\n");
-		return -1;
+		return EXIT_FAILURE;
 	}
 
 	libererMemoireProbleme(probleme);
 
-	return 0;
+	return EXIT_SUCCESS;
 }

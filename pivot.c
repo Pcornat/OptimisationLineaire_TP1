@@ -1,7 +1,6 @@
-/*A completer*/
+#include "pivot.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include "pivot.h"
 
 /**
  * Nombre de ligne dans une matrice : nombre de contrainte.
@@ -14,7 +13,10 @@ void initMatPivot(prob_t* prob) {
 		fprintf(stderr, "Erreur allocation mémoire (code 1)\n");
 		exit(EXIT_FAILURE);
 	}
+	prob->cont[prob->nCont] = NULL;
 	for (int i = 0; i < prob->nCont + 1; ++i) {
+		printf("%d\n", i);
+		fflush(stdout);
 		if ((prob->cont[i] = (double*) realloc(prob->cont[i], nbColonne * sizeof(double))) == NULL) {
 			fprintf(stderr, "Erreur allocation mémoire (code 2)\n");
 			exit(EXIT_FAILURE);
@@ -29,6 +31,10 @@ void initMatPivot(prob_t* prob) {
 	}
 }
 
+/**
+ * Affiche la matrice dans prob.
+ * @param prob Contient la matrice pivot à afficher.
+ */
 void afficherMatrice(prob_t* prob) {
 	for (int i = 0; i < prob->nCont + 1; ++i) {
 		for (int j = 0; j < (prob->nVar + prob->nCont + 1); ++j) {

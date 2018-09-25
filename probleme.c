@@ -1,9 +1,8 @@
+#include "probleme.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-
-#include "probleme.h"
 
 void afficherProbleme(prob_t prob) {
 	int i, j;
