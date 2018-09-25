@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <math.h>
+#include <string.h>
 
 #include "probleme.h"
 
-void afficherProbleme(prob_t prob)
-{
+void afficherProbleme(prob_t prob) {
 	int i, j;
 
 	printf("\n");
@@ -15,8 +14,7 @@ void afficherProbleme(prob_t prob)
 	else
 		printf("Minimiser z = ");
 
-	for (j = 0; j < prob.nVar; j++)
-	{
+	for (j = 0; j < prob.nVar; j++) {
 		if (prob.fonc[j] < 0)
 			printf("- ");
 		else
@@ -26,10 +24,8 @@ void afficherProbleme(prob_t prob)
 	}
 	printf("\n\n");
 	printf("Sous les contraintes\n\n");
-	for (i = 0; i < prob.nCont; i++)
-	{
-		for (j = 0; j < prob.nVar; j++)
-		{
+	for (i = 0; i < prob.nCont; i++) {
+		for (j = 0; j < prob.nVar; j++) {
 			if (prob.cont[i][j] < 0)
 				printf("- ");
 			else
@@ -48,8 +44,7 @@ void afficherProbleme(prob_t prob)
 		printf("%6.2lf\n", fabs(prob.valCont[i]));
 	}
 	printf("\n");
-	for (j = 0; j < prob.nVar; j++)
-	{
+	for (j = 0; j < prob.nVar; j++) {
 		printf("x%d >= 0", j + 1);
 		if (j < prob.nVar - 1)
 			printf(", ");
@@ -57,17 +52,15 @@ void afficherProbleme(prob_t prob)
 	printf("\n");
 }
 
-int lireProbleme(char *nomFichier, prob_t *prob)
-{
+int lireProbleme(char* nomFichier, prob_t* prob) {
 	/*Lit les donnees d'un probleme a partir d'un fichier specifie*/
 	/*et les place dans la structure prob*/
 
-	FILE *fichier;
+	FILE* fichier;
 	char chTemp[20], signe[3];
 	int i, j;
 
-	if ((fichier = fopen(nomFichier, "r")))
-	{
+	if ((fichier = fopen(nomFichier, "r"))) {
 		fscanf(fichier, "%s", chTemp);
 		fscanf(fichier, "%d", &prob->nVar);
 		fscanf(fichier, "%s", chTemp);
@@ -77,23 +70,20 @@ int lireProbleme(char *nomFichier, prob_t *prob)
 			prob->typeOpt = 1;
 		else
 			prob->typeOpt = 0;
-		prob->fonc = (double *)malloc(sizeof(double) * prob->nVar);
-		for (j = 0; j < prob->nVar; j++)
-		{
+		prob->fonc = (double*) malloc(sizeof(double) * prob->nVar);
+		for (j = 0; j < prob->nVar; j++) {
 			fscanf(fichier, "%s", signe);
 			fscanf(fichier, "%lf", &prob->fonc[j]);
 			if (!strcmp(signe, "-"))
 				prob->fonc[j] = -prob->fonc[j];
 			fscanf(fichier, "%s", chTemp);
 		}
-		prob->cont = (double **)malloc(sizeof(double *) * prob->nCont);
-		prob->signeCont = (int *)malloc(sizeof(int) * prob->nCont);
-		prob->valCont = (double *)malloc(sizeof(double) * prob->nCont);
-		for (i = 0; i < prob->nCont; i++)
-		{
-			prob->cont[i] = (double *)malloc(sizeof(double) * prob->nVar);
-			for (j = 0; j < prob->nVar; j++)
-			{
+		prob->cont = (double**) malloc(sizeof(double*) * prob->nCont);
+		prob->signeCont = (int*) malloc(sizeof(int) * prob->nCont);
+		prob->valCont = (double*) malloc(sizeof(double) * prob->nCont);
+		for (i = 0; i < prob->nCont; i++) {
+			prob->cont[i] = (double*) malloc(sizeof(double) * prob->nVar);
+			for (j = 0; j < prob->nVar; j++) {
 				fscanf(fichier, "%s", signe);
 				fscanf(fichier, "%lf", &prob->cont[i][j]);
 				if (!strcmp(signe, "-"))
@@ -108,9 +98,7 @@ int lireProbleme(char *nomFichier, prob_t *prob)
 			fscanf(fichier, "%lf", &prob->valCont[i]);
 		}
 		fclose(fichier);
-	}
-	else
-	{
+	} else {
 		printf("Probleme lecture fichier\n");
 		return -1;
 	}
@@ -118,13 +106,12 @@ int lireProbleme(char *nomFichier, prob_t *prob)
 	return 0;
 }
 
-void libererMemoireProbleme(prob_t prob)
-{
+void libererMemoireProbleme(prob_t prob) {
 	int i;
 
 	if (prob.fonc != NULL)
 		free(prob.fonc);
-	for (i = 0; i < prob.nCont; i++)
+	for (i = 0; i < prob.nCont + 1; i++)
 		if (prob.cont[i] != NULL)
 			free(prob.cont[i]);
 	if (prob.cont != NULL)
