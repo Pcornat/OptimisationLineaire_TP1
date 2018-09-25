@@ -1,3 +1,6 @@
 simplexe.zip
 *.o
 prog
+CMake*
+cmake*
+.idea
