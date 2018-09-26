@@ -110,7 +110,7 @@ void libererMemoireProbleme(prob_t prob) {
 
 	if (prob.fonc != NULL)
 		free(prob.fonc);
-	for (i = 0; i < prob.nCont + 1; i++)
+	for (i = 0; i < prob.nCont; i++)
 		if (prob.cont[i] != NULL)
 			free(prob.cont[i]);
 	if (prob.cont != NULL)

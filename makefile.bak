@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -pipe -march=native -std=c99 -Wall -Wextra -pedantic -O3
-LDLIBS = -lm
+LDLIBS =
 LDFLAGS = -pipe -O3
 
 SRCS = $(wildcard *.c)
@@ -29,5 +29,5 @@ mrproper:	clean
 
 probleme.o: probleme.h types.h
 utils.o: utils.h
-simplexe.o: probleme.h types.h simplexe.h pivot.h
+simplexe.o: types.h probleme.h pivot.h
 pivot.o: pivot.h types.h utils.h

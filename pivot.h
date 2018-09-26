@@ -2,10 +2,16 @@
 
 #include "types.h"
 
-void initMatPivot(prob_t*);
+double** initMatPivot(prob_t*);
 
-void afficherMatrice(prob_t*);
+void libererMatrice(prob_t*, double***);
 
-int selectionnerColPivot(prob_t*);
+void afficherMatrice(prob_t*, double**);
 
-int selectionnerLignePivot(prob_t*, int);
+int selectionnerColPivot(prob_t*, double**);
+
+int selectionnerLignePivot(prob_t*, double**, int);
+
+void diviserLignePivot(prob_t*, double**, int, int);
+
+void miseAZeroColPivot(prob_t*, double**, int, int);

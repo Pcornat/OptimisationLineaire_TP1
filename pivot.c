@@ -8,31 +8,37 @@
  * Nombre de ligne dans une matrice : nombre de contrainte.
  * Nombre de colonne matrice = nombre variable
  * @param prob
+ * @return Le pointeur de ma matrice pivot.
  */
-void initMatPivot(prob_t* prob) {
-	int nbColonne = prob->nVar + prob->nCont + 1;
-	checkErrorNull(prob->cont = (double**) realloc(prob->cont, (prob->nCont + 1) * sizeof(double*)));
-	prob->cont[prob->nCont] = NULL;
+double** initMatPivot(prob_t* prob) {
+	double** matrice = NULL;
+	unsigned int nbColonne = prob->nVar + prob->nCont + 1;
+	checkErrorNull(matrice = (double**) calloc((prob->nCont + 1), sizeof(double*)));
 	for (int i = 0; i < prob->nCont + 1; ++i) {
-		checkErrorNull(prob->cont[i] = (double*) realloc(prob->cont[i], nbColonne * sizeof(double)));
-		prob->cont[i][nbColonne - 1] = prob->valCont[i];
+		checkErrorNull(matrice[i] = (double*) calloc(nbColonne, sizeof(double)));
+		matrice[i][nbColonne - 1] = prob->valCont[i];
+		for (int j = 0; j < prob->nVar; ++j) {
+			if (i < prob->nCont)
+				matrice[i][j] = prob->cont[i][j];
+			if (i == prob->nCont)
+				matrice[prob->nCont][j] = prob->fonc[j];
+		}
 	}
 	for (int i = 0, j = prob->nVar; i < prob->nCont && j < (prob->nVar + prob->nCont); ++i, ++j) {
-		prob->cont[i][j] = 1;
+		matrice[i][j] = 1;
 	}
-	for (int j = 0; j < prob->nVar; ++j) {
-		prob->cont[prob->nCont][j] = prob->fonc[j];
-	}
+	return matrice;
 }
 
 /**
  * Affiche la matrice dans prob.
  * @param prob Contient la matrice pivot à afficher.
+ * @param matrice
  */
-void afficherMatrice(prob_t* prob) {
+void afficherMatrice(prob_t* prob, double** matrice) {
 	for (int i = 0; i < prob->nCont + 1; ++i) {
 		for (int j = 0; j < (prob->nVar + prob->nCont + 1); ++j) {
-			printf("%6.2lf\t", prob->cont[i][j]);
+			printf("%2.4lf\t", matrice[i][j]);
 		}
 		printf("\n");
 	}
@@ -41,31 +47,62 @@ void afficherMatrice(prob_t* prob) {
 /**
  * Permet de sélectionner la variable d'entrée hors-base pour le simplexe.
  * @param prob
+ * @param matrice
  * @return L'indice de la colonne avec le coefficient le plus grand.
  */
-int selectionnerColPivot(prob_t* prob) {
+int selectionnerColPivot(prob_t* prob, double** matrice) {
 	int nbColonne = prob->nVar + prob->nCont + 1, j = 0;
 	double max = 0;
 	for (int i = 0; i < nbColonne; ++i) {
-		if (prob->cont[prob->nCont][i] > max) {
-			max = prob->cont[prob->nCont][i];
+		if (matrice[prob->nCont][i] > max) {
+			max = matrice[prob->nCont][i];
 			j = i;
 		}
 	}
 	return j;
 }
 
-int selectionnerLignePivot(prob_t* prob, int nColPivot) {
+int selectionnerLignePivot(prob_t* prob, double** matrice, int nColPivot) {
 	int nLignePivot = 0, colonneMax = prob->nVar + prob->nCont;
 	double rapport = 0, min = DBL_MAX;
 	for (int i = 0; i < prob->nCont; ++i) {
-		rapport = prob->cont[i][colonneMax] / prob->cont[i][nColPivot];
+		rapport = matrice[i][colonneMax] / matrice[i][nColPivot];
 		if (min > rapport) {
 			min = rapport;
 			nLignePivot = i;
 		}
 	}
 	return nLignePivot;
+}
+
+void diviserLignePivot(prob_t* prob, double** matrice, int lignePivot, int colPivot) {
+	double pivot = matrice[lignePivot][colPivot];
+	int nbColonne = prob->nVar + prob->nCont + 1;
+	for (int i = 0; i < nbColonne; ++i) {
+		matrice[lignePivot][i] = matrice[lignePivot][i] / pivot;
+	}
+}
+
+void miseAZeroColPivot(prob_t* prob, double** matrice, int lignePivot, int colPivot) {
+	int nbColonne = prob->nVar + prob->nCont + 1;
+	//Mise à zéro de la colonne pivot sauf le pivot lui-même
+	for (int i = 0; i < prob->nCont + 1; ++i) {
+		if (i != lignePivot)
+			matrice[i][colPivot] = 0;
+	}
+	for (int k = 0; k < prob->nCont + 1; ++k)
+		for (int j = 0; j < nbColonne; ++j) {
+			if (k != lignePivot && j != colPivot)
+				matrice[k][j] -= (matrice[k][colPivot] / matrice[lignePivot][colPivot]) * matrice[lignePivot][j];
+		}
+}
+
+void libererMatrice(prob_t* prob, double*** matrice) {
+	for (int i = 0; i < prob->nCont + 1; ++i) {
+		free(((*matrice)[i]));
+	}
+	free(*matrice);
+	*matrice = NULL;
 }
 
 /**************************************/
