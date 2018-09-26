@@ -13,6 +13,7 @@ int main(int argc, char* argv[]) {
 		exit(EXIT_FAILURE);
 	}
 	char nomFichier[20];
+	int nColPivot, nLignePivot;
 	prob_t probleme = {0, 0, 0, NULL, NULL, NULL, NULL};
 
 	strcpy(nomFichier, argv[1]);
@@ -21,6 +22,9 @@ int main(int argc, char* argv[]) {
 		afficherProbleme(probleme);
 		initMatPivot(&probleme);
 		afficherMatrice(&probleme);
+		nColPivot = selectionnerColPivot(&probleme);
+		nLignePivot = selectionnerLignePivot(&probleme, nColPivot);
+		printf("Ligne pivot : %d\n", nLignePivot);
 	} else {
 		printf("Probleme lecture Probleme\n");
 		return EXIT_FAILURE;
