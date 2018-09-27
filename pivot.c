@@ -62,6 +62,13 @@ int selectionnerColPivot(prob_t* prob, double** matrice) {
 	return j;
 }
 
+/**
+ * Permet de trouver l'indice de la ligne pivot de la matrice
+ * @param prob
+ * @param matrice
+ * @param nColPivot
+ * @return
+ */
 int selectionnerLignePivot(prob_t* prob, double** matrice, int nColPivot) {
 	int nLignePivot = 0, colonneMax = prob->nVar + prob->nCont;
 	double rapport = 0, min = DBL_MAX;
@@ -75,6 +82,13 @@ int selectionnerLignePivot(prob_t* prob, double** matrice, int nColPivot) {
 	return nLignePivot;
 }
 
+/**
+ * Va diviser la ligne pivot par le pivot. Ce qui fait que le pivot vaudra donc 1
+ * @param prob
+ * @param matrice
+ * @param lignePivot
+ * @param colPivot
+ */
 void diviserLignePivot(prob_t* prob, double** matrice, int lignePivot, int colPivot) {
 	double pivot = matrice[lignePivot][colPivot];
 	int nbColonne = prob->nVar + prob->nCont + 1;
@@ -83,6 +97,13 @@ void diviserLignePivot(prob_t* prob, double** matrice, int lignePivot, int colPi
 	}
 }
 
+/**
+ * Mise à zéro de la colonne du pivot.
+ * @param prob
+ * @param matrice
+ * @param lignePivot
+ * @param colPivot
+ */
 void miseAZeroColPivot(prob_t* prob, double** matrice, int lignePivot, int colPivot) {
 	int nbColonne = prob->nVar + prob->nCont + 1;
 	//Mise à zéro de la colonne pivot sauf le pivot lui-même
@@ -97,6 +118,11 @@ void miseAZeroColPivot(prob_t* prob, double** matrice, int lignePivot, int colPi
 		}
 }
 
+/**
+ * Libère la mémoire allouée dynamiquement pour la matrice.
+ * @param prob
+ * @param matrice
+ */
 void libererMatrice(prob_t* prob, double*** matrice) {
 	for (int i = 0; i < prob->nCont + 1; ++i) {
 		free(((*matrice)[i]));
