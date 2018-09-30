@@ -5,7 +5,7 @@
 #include <string.h>
 
 void afficherProbleme(prob_t prob) {
-	int i, j;
+	unsigned int i, j;
 
 	printf("\n");
 	if (prob.typeOpt)
@@ -57,13 +57,13 @@ int lireProbleme(char* nomFichier, prob_t* prob) {
 
 	FILE* fichier;
 	char chTemp[20], signe[3];
-	int i, j;
+	unsigned int i, j;
 
 	if ((fichier = fopen(nomFichier, "r"))) {
 		fscanf(fichier, "%s", chTemp);
-		fscanf(fichier, "%d", &prob->nVar);
+		fscanf(fichier, "%ud", &prob->nVar);
 		fscanf(fichier, "%s", chTemp);
-		fscanf(fichier, "%d", &prob->nCont);
+		fscanf(fichier, "%ud", &prob->nCont);
 		fscanf(fichier, "%s", chTemp);
 		if (!strcmp(chTemp, "max"))
 			prob->typeOpt = 1;
@@ -106,7 +106,7 @@ int lireProbleme(char* nomFichier, prob_t* prob) {
 }
 
 void libererMemoireProbleme(prob_t prob) {
-	int i;
+	unsigned int i;
 
 	if (prob.fonc != NULL)
 		free(prob.fonc);

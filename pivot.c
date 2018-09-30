@@ -1,5 +1,4 @@
 #include "pivot.h"
-#include "utils.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <float.h>
@@ -14,17 +13,17 @@ double** initMatPivot(prob_t* prob) {
 	double** matrice = NULL;
 	unsigned int nbColonne = prob->nVar + prob->nCont + 1;
 	checkErrorNull(matrice = (double**) calloc((prob->nCont + 1), sizeof(double*)));
-	for (int i = 0; i < prob->nCont + 1; ++i) {
+	for (unsigned int i = 0; i < prob->nCont + 1; ++i) {
 		checkErrorNull(matrice[i] = (double*) calloc(nbColonne, sizeof(double)));
 		matrice[i][nbColonne - 1] = prob->valCont[i];
-		for (int j = 0; j < prob->nVar; ++j) {
+		for (unsigned int j = 0; j < prob->nVar; ++j) {
 			if (i < prob->nCont)
 				matrice[i][j] = prob->cont[i][j];
 			if (i == prob->nCont)
 				matrice[prob->nCont][j] = prob->fonc[j];
 		}
 	}
-	for (int i = 0, j = prob->nVar; i < prob->nCont && j < (prob->nVar + prob->nCont); ++i, ++j) {
+	for (unsigned int i = 0, j = prob->nVar; i < prob->nCont && j < (prob->nVar + prob->nCont); ++i, ++j) {
 		matrice[i][j] = 1;
 	}
 	return matrice;
@@ -36,8 +35,8 @@ double** initMatPivot(prob_t* prob) {
  * @param matrice
  */
 void afficherMatrice(prob_t* prob, double** matrice) {
-	for (int i = 0; i < prob->nCont + 1; ++i) {
-		for (int j = 0; j < (prob->nVar + prob->nCont + 1); ++j) {
+	for (unsigned int i = 0; i < prob->nCont + 1; ++i) {
+		for (unsigned int j = 0; j < (prob->nVar + prob->nCont + 1); ++j) {
 			printf("%2.4lf\t", matrice[i][j]);
 		}
 		printf("\n");
@@ -51,9 +50,9 @@ void afficherMatrice(prob_t* prob, double** matrice) {
  * @return L'indice de la colonne avec le coefficient le plus grand.
  */
 int selectionnerColPivot(prob_t* prob, double** matrice) {
-	int nbColonne = prob->nVar + prob->nCont + 1, j = 0;
+	unsigned int nbColonne = prob->nVar + prob->nCont + 1, j = 0;
 	double max = 0;
-	for (int i = 0; i < nbColonne; ++i) {
+	for (unsigned int i = 0; i < nbColonne; ++i) {
 		if (matrice[prob->nCont][i] > max) {
 			max = matrice[prob->nCont][i];
 			j = i;
@@ -70,9 +69,9 @@ int selectionnerColPivot(prob_t* prob, double** matrice) {
  * @return
  */
 int selectionnerLignePivot(prob_t* prob, double** matrice, int nColPivot) {
-	int nLignePivot = 0, colonneMax = prob->nVar + prob->nCont;
+	unsigned int nLignePivot = 0, colonneMax = prob->nVar + prob->nCont;
 	double rapport = 0, min = DBL_MAX;
-	for (int i = 0; i < prob->nCont; ++i) {
+	for (unsigned int i = 0; i < prob->nCont; ++i) {
 		rapport = matrice[i][colonneMax] / matrice[i][nColPivot];
 		if (min > rapport) {
 			min = rapport;
@@ -91,8 +90,8 @@ int selectionnerLignePivot(prob_t* prob, double** matrice, int nColPivot) {
  */
 void diviserLignePivot(prob_t* prob, double** matrice, int lignePivot, int colPivot) {
 	double pivot = matrice[lignePivot][colPivot];
-	int nbColonne = prob->nVar + prob->nCont + 1;
-	for (int i = 0; i < nbColonne; ++i) {
+	unsigned int nbColonne = prob->nVar + prob->nCont + 1;
+	for (unsigned int i = 0; i < nbColonne; ++i) {
 		matrice[lignePivot][i] = matrice[lignePivot][i] / pivot;
 	}
 }
@@ -104,15 +103,15 @@ void diviserLignePivot(prob_t* prob, double** matrice, int lignePivot, int colPi
  * @param lignePivot
  * @param colPivot
  */
-void miseAZeroColPivot(prob_t* prob, double** matrice, int lignePivot, int colPivot) {
-	int nbColonne = prob->nVar + prob->nCont + 1;
+void miseAZeroColPivot(prob_t *prob, double **matrice, unsigned int lignePivot, unsigned int colPivot) {
+	unsigned int nbColonne = prob->nVar + prob->nCont + 1;
 	//Mise à zéro de la colonne pivot sauf le pivot lui-même
-	for (int i = 0; i < prob->nCont + 1; ++i) {
+	for (unsigned int i = 0; i < prob->nCont + 1; ++i) {
 		if (i != lignePivot)
 			matrice[i][colPivot] = 0;
 	}
-	for (int k = 0; k < prob->nCont + 1; ++k)
-		for (int j = 0; j < nbColonne; ++j) {
+	for (unsigned int k = 0; k < prob->nCont + 1; ++k)
+		for (unsigned int j = 0; j < nbColonne; ++j) {
 			if (k != lignePivot && j != colPivot)
 				matrice[k][j] -= (matrice[k][colPivot] / matrice[lignePivot][colPivot]) * matrice[lignePivot][j];
 		}
@@ -124,7 +123,7 @@ void miseAZeroColPivot(prob_t* prob, double** matrice, int lignePivot, int colPi
  * @param matrice
  */
 void libererMatrice(prob_t* prob, double*** matrice) {
-	for (int i = 0; i < prob->nCont + 1; ++i) {
+	for (unsigned int i = 0; i < prob->nCont + 1; ++i) {
 		free(((*matrice)[i]));
 	}
 	free(*matrice);

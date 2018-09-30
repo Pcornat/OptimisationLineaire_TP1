@@ -14,4 +14,4 @@ int selectionnerLignePivot(prob_t*, double**, int);
 
 void diviserLignePivot(prob_t*, double**, int, int);
 
-void miseAZeroColPivot(prob_t*, double**, int, int);
+void miseAZeroColPivot(prob_t *, double **, unsigned int, unsigned int);
